@@ -23,12 +23,14 @@ export function ResultsTable({ results, isProcessing }) {
                 <table>
                     <thead>
                         <tr>
-                            <th className="w-1/6 min-w-[200px]">Learning Objective</th>
-                            <th className="w-1/6 min-w-[200px]">Enduring Understanding</th>
-                            <th className="w-1/6 min-w-[200px]">Essential Questions</th>
-                            <th className="w-1/6 min-w-[200px]">Assessment Project</th>
-                            <th className="w-1/6 min-w-[200px]">Mastery Criteria & Accommodations</th>
-                            <th className="w-1/6 min-w-[200px]">Activities</th>
+                            <th className="min-w-[250px]">Learning Objective</th>
+                            <th className="min-w-[200px]">Competencies</th>
+                            <th className="min-w-[200px]">Enduring Understandings</th>
+                            <th className="min-w-[200px]">Essential Questions</th>
+                            <th className="min-w-[300px]">Assessments</th>
+                            <th className="min-w-[250px]">Mastery Criteria</th>
+                            <th className="min-w-[250px]">UDL Accommodations</th>
+                            <th className="min-w-[300px]">Activities</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -43,7 +45,7 @@ export function ResultsTable({ results, isProcessing }) {
                         ))}
                         {results.length === 0 && isProcessing && (
                             <tr>
-                                <td colSpan="6" className="text-center py-8 text-[var(--color-text-dim)]">
+                                <td colSpan="8" className="text-center py-8 text-[var(--color-text-dim)]">
                                     Generating your curriculum...
                                 </td>
                             </tr>

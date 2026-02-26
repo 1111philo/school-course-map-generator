@@ -4,16 +4,18 @@ import { ModelSelector } from './components/ModelSelector';
 import { ResultsTable } from './components/ResultsTable';
 import { CsvDownloader } from './components/CsvDownloader';
 import { ApiKeyManager } from './components/ApiKeyManager';
-import { generateCurriculum } from './services/ai';
+import { generateCurriculum, MODELS } from './services/ai';
 import { parseCSVRow } from './utils/csv';
 import { Sparkles, BookOpen } from 'lucide-react';
 
 function App() {
   const [objectives, setObjectives] = useState('');
-  const [model, setModel] = useState('gemini-1.5-pro');
+  const [model, setModel] = useState('gemini-3-flash-preview');
   const [results, setResults] = useState([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState(null);
+
+  const selectedModelName = MODELS.find(m => m.id === model)?.name || 'Gemini';
 
   const handleGenerate = async () => {
     const objectiveList = objectives.split('\n').filter(line => line.trim().length > 0);
@@ -45,9 +47,11 @@ function App() {
           }
         } catch (err) {
           console.error(`Failed to generate for: ${obj}`, err);
-          // Optional: Add an error row or skip
-          // newResults.push([obj, "Error generating content", "", "", "", ""]);
-          // setResults(prev => [...prev, [obj, "Error", "", "", "", ""]]);
+          setError(`Failed to generate for "${obj}": ${err.message || 'Unknown error'}`);
+          // Stop processing if it's an API/Auth error
+          if (err.message?.includes('404') || err.message?.includes('401') || err.message?.includes('Key')) {
+            break;
+          }
         }
       }
     } catch (generalError) {
@@ -70,7 +74,7 @@ function App() {
             </h1>
           </div>
           <div className="text-sm text-[var(--color-text-dim)] hidden sm:block">
-            Powered by Google Gemini
+            Using {selectedModelName}
           </div>
         </div>
       </header>
@@ -96,7 +100,7 @@ function App() {
               ) : (
                 <>
                   <Sparkles />
-                  Generate Curriculum
+                  Generate Curriculum with {selectedModelName}
                 </>
               )}
             </button>
@@ -118,7 +122,7 @@ function App() {
         <ResultsTable results={results} isProcessing={isProcessing} />
       </main>
 
-      <CsvDownloader results={results} />
+      <CsvDownloader results={results} selectedModelId={model} />
     </div>
   );
 }

@@ -1,18 +1,25 @@
 import React from 'react';
 import { Download } from 'lucide-react';
 import { generateCSV } from '../utils/csv';
+import { MODELS } from '../services/ai';
 
-export function CsvDownloader({ results }) {
+export function CsvDownloader({ results, selectedModelId }) {
     if (results.length === 0) return null;
 
     const handleDownload = () => {
+        const model = MODELS.find(m => m.id === selectedModelId);
+        const modelName = model ? model.name.toLowerCase().replace(/\s+/g, '_') : 'unknown_model';
+        const timestamp = new Date().toISOString().split('T')[0];
+
         // Defined headers based on the prompt requirements
         const headers = [
-            "Learning Objective / Competency",
-            "Enduring Understanding",
+            "Learning Objective",
+            "Competencies",
+            "Enduring Understandings",
             "Essential Questions",
-            "Assessment Project Check Bloom's & Webb's",
-            "Mastery Criteria / Success Metrics UDL Accommodations",
+            "Assessments",
+            "Mastery Criteria",
+            "UDL Accommodations",
             "Activities"
         ];
 
@@ -21,7 +28,7 @@ export function CsvDownloader({ results }) {
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', 'curriculum_export.csv');
+        link.setAttribute('download', `curriculum_${modelName}_${timestamp}.csv`);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
